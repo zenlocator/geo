@@ -292,6 +292,29 @@ function parseCoord(coord) {
 	return ret;
 }
 
+function getDistance(coords1, coords2) {
+
+	/* haversine formula */
+
+	var degreesToRadians = function degreesToRadians(deg) {
+		return deg * (Math.PI / 180);
+	};
+
+	var lat1 = this.parseCoord(coords1.lat, false);
+	var lng1 = this.parseCoord(coords1.lng, false);
+	var lat2 = this.parseCoord(coords2.lat, false);
+	var lng2 = this.parseCoord(coords2.lng, false);
+
+	var earthRadiusMeters = 6371000;
+
+	var dLat = degreesToRadians(lat2 - lat1);
+	var dLng = degreesToRadians(lng2 - lng1);
+
+	var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+
+	return this.formatDistance(earthRadiusMeters * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+}
+
 function getCenterFromCoords() {}
 
 function getCenterFromBounds() {}
@@ -317,6 +340,7 @@ var methods = Object.freeze({
 	formatCoord: formatCoord,
 	detectCoordFormat: detectCoordFormat,
 	parseCoord: parseCoord,
+	getDistance: getDistance,
 	getCenterFromCoords: getCenterFromCoords,
 	getCenterFromBounds: getCenterFromBounds,
 	getBounds: getBounds,
@@ -350,10 +374,10 @@ var Geo = function Geo(settings) {
 	this.FLEXIBLE_DISTANCE_PRECISION = -1;
 
 	this.coordFormats = {
-		DMS: 'dms', /* Degrees, Minutes and Seconds: `DDD° MM' SS.S"` */
-		DM: 'dm', /* Degrees and Decimal Minutes: `DDD° MM.MMM'` */
-		DD: 'dd', /* Decimal Degrees: `DDD.DDDDD°` */
-		D: 'd' /* Decimal: `DDD.DDDDD` */
+		DMS: 'dms', /* degrees, minutes and seconds: (string)`DDD° MM' SS.S"` */
+		DM: 'dm', /* degrees and decimal minutes: (string)`DDD° MM.MMM'` */
+		DD: 'dd', /* decimal degrees: (string)`DDD.DDDDD°` */
+		D: 'd' /* decimal: (float)`DDD.DDDDD` */
 	};
 
 	this.settings = _extends({
