@@ -327,9 +327,15 @@ function isPointInBounds() {}
 
 function isPointInCircle() {}
 
-function isValidLat(lat) {}
+function isValidLat(lat) {
+	lat = this.parseCoord(lat);
+	return lat >= -90 && lat <= 90;
+}
 
-function isValidLng(lng) {}
+function isValidLng(lng) {
+	lng = this.parseCoord(lng);
+	return lng >= -180 && lng <= 180;
+}
 
 function orderByDistance() {}
 
