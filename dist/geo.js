@@ -4,19 +4,36 @@
 	(global.Geo = factory());
 }(this, (function () { 'use strict';
 
-function getCenter() {
-	return "getCenter says " + this.name;
-}
+function convertDistance() {}
 
-function getDistance() {
-	return "getDistance says " + this.name;
-}
+function getDistance() {}
+
+function getCenterFromCoords() {}
+
+function getCenterFromBounds() {}
+
+function getBounds() {}
+
+function getClosest() {}
+
+function isPointInBounds() {}
+
+function isPointInCircle() {}
+
+function orderByDistance() {}
 
 
 
-var funcs = Object.freeze({
-	getCenter: getCenter,
-	getDistance: getDistance
+var methods = Object.freeze({
+	convertDistance: convertDistance,
+	getDistance: getDistance,
+	getCenterFromCoords: getCenterFromCoords,
+	getCenterFromBounds: getCenterFromBounds,
+	getBounds: getBounds,
+	getClosest: getClosest,
+	isPointInBounds: isPointInBounds,
+	isPointInCircle: isPointInCircle,
+	orderByDistance: orderByDistance
 });
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -29,7 +46,7 @@ var Geo = function Geo() {
 	this.name = 'Geo';
 };
 
-Geo.prototype = _extends({}, Geo.prototype, funcs);
+Geo.prototype = _extends({}, Geo.prototype, methods);
 
 return Geo;
 
