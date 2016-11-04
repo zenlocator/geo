@@ -4,7 +4,7 @@
 	(global.Geo = factory());
 }(this, (function () { 'use strict';
 
-function formatDistance(meters) {
+var formatDistance = function (meters) {
 
 	var ret = meters;
 	var distancePrecision = void 0;
@@ -57,9 +57,9 @@ function formatDistance(meters) {
 	}
 
 	return parseFloat(ret.toFixed(distancePrecision));
-}
+};
 
-function formatCoord(coord) {
+var formatCoord = function (coord) {
 	var isLat = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
 
@@ -121,9 +121,9 @@ function formatCoord(coord) {
 	}
 
 	return ret;
-}
+};
 
-function detectCoordFormat(coord) {
+var detectCoordFormat = function (coord) {
 
 	/* really rough check for the number of floats present in a string */
 
@@ -143,9 +143,9 @@ function detectCoordFormat(coord) {
 			}
 		}
 	}
-}
+};
 
-function parseCoord(coord) {
+var parseCoord = function (coord) {
 	var usePrecision = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
 
@@ -222,9 +222,9 @@ function parseCoord(coord) {
 	}
 
 	return ret;
-}
+};
 
-function getDistance(coords1, coords2) {
+var getDistance = function (coords1, coords2) {
 
 	/* haversine formula */
 
@@ -245,31 +245,31 @@ function getDistance(coords1, coords2) {
 	var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
 
 	return this.formatDistance(earthRadiusMeters * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-}
+};
 
-function getCenterFromCoords() {}
+var getCenterFromCoords = function () {};
 
-function getCenterFromBounds() {}
+var getCenterFromBounds = function () {};
 
-function getBounds() {}
+var getBounds = function () {};
 
-function getClosest() {}
+var getClosest = function () {};
 
-function isPointInBounds() {}
+var isPointInBounds = function () {};
 
-function isPointInCircle() {}
+var isPointInCircle = function () {};
 
-function isValidLat(lat) {
+var isValidLat = function (lat) {
 	lat = this.parseCoord(lat);
 	return lat >= -90 && lat <= 90;
-}
+};
 
-function isValidLng(lng) {
+var isValidLng = function (lng) {
 	lng = this.parseCoord(lng);
 	return lng >= -180 && lng <= 180;
-}
+};
 
-function orderByDistance() {}
+var orderByDistance = function () {};
 
 
 
