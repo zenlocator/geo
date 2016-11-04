@@ -18,7 +18,7 @@
   "main": "lib/index.js",
   "scripts": {
     "lint": "eslint lib tests",
-    "test": "ava tests --tap | tap-nyan",
+    "test": "ava tests --verbose --tap | tap-nyan",
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "rollup": "rollup lib/index.js -c rollup.config.js -o dist/geo.js",
     "minify": "uglifyjs dist/geo.js -o dist/geo.min.js --source-map dist/geo.min.map --compress --mangle",

@@ -56,7 +56,7 @@ function formatDistance(meters) {
 		distancePrecision = this.settings.outputDistancePrecision;
 	}
 
-	return ret.toFixed(distancePrecision);
+	return parseFloat(ret.toFixed(distancePrecision));
 }
 
 function formatCoord(coord) {
@@ -125,92 +125,21 @@ function formatCoord(coord) {
 
 function detectCoordFormat(coord) {
 
-	var degrees = ['°'];
-	var minutes = ['\'', '`', '′'];
-	var seconds = ['"', '″'];
+	/* really rough check for the number of floats present in a string */
 
 	if (typeof coord === 'number') {
-		return this.coordFormats.DD;
+		return this.coordFormats.D;
 	} else if (typeof coord === 'string') {
-		var _iteratorNormalCompletion = true;
-		var _didIteratorError = false;
-		var _iteratorError = undefined;
 
-		try {
+		var floats = coord.match(/[+-]?\d+(\.\d+)?/g);
+		if (floats) {
 
-			for (var _iterator = seconds[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-				var symbol = _step.value;
-
-				if (coord.indexOf(symbol) !== -1) {
-					return this.coordFormats.DMS;
-				}
-			}
-		} catch (err) {
-			_didIteratorError = true;
-			_iteratorError = err;
-		} finally {
-			try {
-				if (!_iteratorNormalCompletion && _iterator.return) {
-					_iterator.return();
-				}
-			} finally {
-				if (_didIteratorError) {
-					throw _iteratorError;
-				}
-			}
-		}
-
-		var _iteratorNormalCompletion2 = true;
-		var _didIteratorError2 = false;
-		var _iteratorError2 = undefined;
-
-		try {
-			for (var _iterator2 = minutes[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-				var _symbol = _step2.value;
-
-				if (coord.indexOf(_symbol) !== -1) {
-					return this.coordFormats.DM;
-				}
-			}
-		} catch (err) {
-			_didIteratorError2 = true;
-			_iteratorError2 = err;
-		} finally {
-			try {
-				if (!_iteratorNormalCompletion2 && _iterator2.return) {
-					_iterator2.return();
-				}
-			} finally {
-				if (_didIteratorError2) {
-					throw _iteratorError2;
-				}
-			}
-		}
-
-		var _iteratorNormalCompletion3 = true;
-		var _didIteratorError3 = false;
-		var _iteratorError3 = undefined;
-
-		try {
-			for (var _iterator3 = degrees[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-				var _symbol2 = _step3.value;
-
-				if (coord.indexOf(_symbol2) !== -1) {
-					return this.coordFormats.DD;
-				}
-			}
-		} catch (err) {
-			_didIteratorError3 = true;
-			_iteratorError3 = err;
-		} finally {
-			try {
-				if (!_iteratorNormalCompletion3 && _iterator3.return) {
-					_iterator3.return();
-				}
-			} finally {
-				if (_didIteratorError3) {
-					throw _iteratorError3;
-				}
+			if (floats.length === 3) {
+				return this.coordFormats.DMS;
+			} else if (floats.length === 2) {
+				return this.coordFormats.DM;
+			} else if (floats.length === 1) {
+				return coord.indexOf('°') === -1 ? this.coordFormats.D : this.coordFormats.DD;
 			}
 		}
 	}
@@ -223,69 +152,72 @@ function parseCoord(coord) {
 	var coordFormat = this.detectCoordFormat(coord);
 
 	var digits = [];
-	var ret = 0;
+	var ret = void 0;
 
 	if (coordFormat) {
 
-		/* extract floats first */
+		if (coordFormat === this.coordFormats.D) {
+			ret = parseFloat(coord);
+		} else {
 
-		if (typeof coord === 'number') {
-			digits.push(coord);
-		} else if (typeof coord === 'string') {
-			coord = coord.toLowerCase();
-			digits = coord.match(/[+-]?\d+(\.\d+)?/g).map(function (d) {
-				return parseFloat(d);
-			});
-		}
+			/* extract floats first */
 
-		/* test against format */
+			if (typeof coord === 'string') {
+				coord = coord.toLowerCase();
+				digits = coord.match(/[+-]?\d+(\.\d+)?/g).map(function (d) {
+					return parseFloat(d);
+				});
+			}
 
-		if (digits.length === 1 && coordFormat !== this.coordFormats.DD || digits.length === 2 && coordFormat !== this.coordFormats.DM || digits.length === 3 && coordFormat !== this.coordFormats.DMS || digits.length < 1 || digits.length > 3) {
+			/* test against format */
 
-			digits = [];
-		}
+			if (digits.length === 1 && coordFormat !== this.coordFormats.DD || digits.length === 2 && coordFormat !== this.coordFormats.DM || digits.length === 3 && coordFormat !== this.coordFormats.DMS || digits.length < 1 || digits.length > 3) {
 
-		/* convert to internal decimal format */
+				digits = [];
+			}
 
-		if (digits.length) {
+			/* convert to internal decimal format */
 
-			var remainder = 0;
+			if (digits.length) {
 
-			var _iteratorNormalCompletion = true;
-			var _didIteratorError = false;
-			var _iteratorError = undefined;
+				var remainder = 0;
 
-			try {
-				for (var _iterator = digits.reverse()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-					ret = _step.value;
+				var _iteratorNormalCompletion = true;
+				var _didIteratorError = false;
+				var _iteratorError = undefined;
 
-					ret += remainder;
-					remainder = ret / 60;
-				}
-			} catch (err) {
-				_didIteratorError = true;
-				_iteratorError = err;
-			} finally {
 				try {
-					if (!_iteratorNormalCompletion && _iterator.return) {
-						_iterator.return();
+					for (var _iterator = digits.reverse()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+						ret = _step.value;
+
+						ret += remainder;
+						remainder = ret / 60;
 					}
+				} catch (err) {
+					_didIteratorError = true;
+					_iteratorError = err;
 				} finally {
-					if (_didIteratorError) {
-						throw _iteratorError;
+					try {
+						if (!_iteratorNormalCompletion && _iterator.return) {
+							_iterator.return();
+						}
+					} finally {
+						if (_didIteratorError) {
+							throw _iteratorError;
+						}
 					}
 				}
 			}
-		}
 
-		/* assign proper sign */
+			/* assign proper sign */
 
-		if (ret && typeof coord === 'string' && (coord.indexOf('s') !== -1 || coord.indexOf('w') !== -1)) {
-			ret *= -1;
+			if (ret && typeof coord === 'string' && (coord.indexOf('s') !== -1 || coord.indexOf('w') !== -1)) {
+				ret *= -1;
+			}
 		}
 	}
 
-	if (usePrecision) {
+	if (ret && usePrecision) {
 		ret = parseFloat(ret.toFixed(this.settings.outputCoordsPrecision));
 	}
 
