@@ -269,7 +269,106 @@ var isValidLng = function (lng) {
 	return lng >= -180 && lng <= 180;
 };
 
-var orderByDistance = function () {};
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var orderByDistance = function (center, coords) {
+	var _this = this;
+
+	var isPlainObject = function isPlainObject(o) {
+		return (typeof o === 'undefined' ? 'undefined' : _typeof(o)) === 'object' && o.constructor === Object;
+	};
+	var isArray = function isArray(a) {
+		return Object.prototype.toString.call(a) === '[object Array]';
+	};
+
+	if (!isPlainObject(coords) && !isArray(coords)) {
+		return;
+	}
+
+	var ret = isArray(coords) ? [] : {};
+	var distances = [];
+	var orderedDistances = [];
+	var getDistance = function getDistance(c, k) {
+
+		var item = {};
+
+		if (k) {
+			item.key = k;
+		}
+
+		item.value = c;
+		item.distance = _this.getDistance(center, c);
+
+		distances.push(item);
+		orderedDistances.push(item.distance);
+	};
+
+	/* build `distances` */
+
+	if (isArray(coords)) {
+		var _iteratorNormalCompletion = true;
+		var _didIteratorError = false;
+		var _iteratorError = undefined;
+
+		try {
+			for (var _iterator = coords[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+				var c = _step.value;
+
+				getDistance(c);
+			}
+		} catch (err) {
+			_didIteratorError = true;
+			_iteratorError = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion && _iterator.return) {
+					_iterator.return();
+				}
+			} finally {
+				if (_didIteratorError) {
+					throw _iteratorError;
+				}
+			}
+		}
+	} else {
+		for (var k in coords) {
+			getDistance(coords[k], k);
+		}
+	}
+
+	/* sort */
+
+	orderedDistances.sort(function (a, b) {
+		return a - b;
+	});
+
+	/* re-assemble */
+
+	var _loop = function _loop(i) {
+
+		var chunk = distances.filter(function (c) {
+			if (c.distance === orderedDistances[i]) {
+				return c;
+			}
+		});
+
+		for (var j in chunk) {
+
+			var _c = chunk[j];
+			if (_c.hasOwnProperty('key')) {
+				ret[_c.key] = _c.value;
+			} else {
+				ret.push(_c.value);
+			}
+		}
+	};
+
+	for (var i in orderedDistances) {
+		_loop(i);
+	}
+
+	return ret;
+};
 
 
 
