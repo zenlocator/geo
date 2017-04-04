@@ -1,0 +1,15 @@
+
+@zenlocator/geo:
+- formatBounds - DONE
+- isPointInBounds - DONE
+- isPointInCircle - DONE
+- getClosest - DONE
+- getCenter - DONE
+- getDestinationPoint - DONE
+- convertDistance - DONE
+- clean up constants - DONE
+- tests for each - DONE
+
+- cli for each
+- update README + CONTRIBUTING + CHANGELOG
+- release under npm

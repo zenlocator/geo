@@ -31,5 +31,5 @@ test('(d) -123.456789', t => {
 		outputCoordsFormat: 'd',
 		outputCoordsPrecision: 6
 	});
-	t.is(geo.formatCoord(-123.456789, false), -123.456789);
+	t.is(geo.formatCoord(-123.456789123, false), -123.456789);
 });
