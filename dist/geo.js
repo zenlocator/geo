@@ -19,6 +19,7 @@ var convertDistance = function (distance, fromUnits, toUnits) {
 
 	switch (fromUnits) {
 		case this.distanceUnits.KILOMETERS:
+		case this.distanceUnits.KM:
 			meters = distance * 1000;
 			break;
 		case this.distanceUnits.METERS:
@@ -234,6 +235,7 @@ var formatDistance = function (meters) {
 
 	switch (distanceUnits) {
 		case this.distanceUnits.KILOMETERS:
+		case this.distanceUnits.KM:
 			ret *= 0.001;
 			distancePrecision = ret < 1 ? 2 : 1;
 			break;
@@ -509,10 +511,12 @@ var orderByDistance = function (center, coords) {
 		for (var j in chunk) {
 
 			var _c = chunk[j];
+			var v = _this.formatCoords(_c.value);
+
 			if (_c.hasOwnProperty('key')) {
-				ret[_c.key] = _c.value;
+				ret[_c.key] = v;
 			} else {
-				ret.push(_c.value);
+				ret.push(v);
 			}
 		}
 	};
@@ -675,28 +679,6 @@ var parseCoord = function (coord) {
 	return ret;
 };
 
-
-
-var functions = Object.freeze({
-	convertDistance: convertDistance,
-	detectCoordFormat: detectCoordFormat,
-	formatBounds: formatBounds,
-	formatCoord: formatCoord,
-	formatCoords: formatCoords,
-	formatDistance: formatDistance,
-	getCenter: getCenter,
-	getClosest: getClosest,
-	getDestinationPoint: getDestinationPoint,
-	getDistance: getDistance,
-	isPointInBounds: isPointInBounds,
-	isPointInCircle: isPointInCircle,
-	isValidLat: isValidLat,
-	isValidLng: isValidLng,
-	orderByDistance: orderByDistance,
-	parseBounds: parseBounds,
-	parseCoord: parseCoord
-});
-
 var Geo = function Geo() {
 	var settings = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	classCallCheck(this, Geo);
@@ -717,10 +699,11 @@ var Geo = function Geo() {
 		}
 	}
 
-	/* internal */
+	/* constants */
 
 	this.distanceUnits = {
 		KILOMETERS: 'KILOMETERS',
+		KM: 'KM',
 		METERS: 'METERS',
 		LEAGUES: 'LEAGUES',
 		MILES: 'MILES',
@@ -740,13 +723,6 @@ var Geo = function Geo() {
 		D: 'D' /* decimal: (float)`DDD.DDDDD` */
 	};
 
-	this.settings = _extends({
-		distanceUnits: this.distanceUnits.METER,
-		distancePrecision: this.FLEXIBLE_DISTANCE_PRECISION,
-		coordsFormat: this.coordFormats.D,
-		coordsPrecision: 6
-	}, settings);
-
 	/* functions */
 
 	this.toRad = function (degrees) {
@@ -762,14 +738,41 @@ var Geo = function Geo() {
 		return Object.prototype.toString.call(a) === '[object Array]';
 	};
 
-	/* radii */
+	/* radius(es?) :P */
 
 	this.RADIUS_MEAN = 6371000;
 	this.RADIUS_EQUILATERAL = 6378100;
 	this.RADIUS_POLAR = 6356800;
+
+	/* assign settings */
+
+	this.settings = _extends({
+		distanceUnits: this.distanceUnits.METER,
+		distancePrecision: this.FLEXIBLE_DISTANCE_PRECISION,
+		coordsFormat: this.coordFormats.D,
+		coordsPrecision: 6
+	}, settings);
 };
 
-Geo.prototype = _extends({}, Geo.prototype, functions);
+Geo.prototype = _extends({}, Geo.prototype, {
+	convertDistance: convertDistance,
+	detectCoordFormat: detectCoordFormat,
+	formatBounds: formatBounds,
+	formatCoord: formatCoord,
+	formatCoords: formatCoords,
+	formatDistance: formatDistance,
+	getCenter: getCenter,
+	getClosest: getClosest,
+	getDestinationPoint: getDestinationPoint,
+	getDistance: getDistance,
+	isPointInBounds: isPointInBounds,
+	isPointInCircle: isPointInCircle,
+	isValidLat: isValidLat,
+	isValidLng: isValidLng,
+	orderByDistance: orderByDistance,
+	parseBounds: parseBounds,
+	parseCoord: parseCoord
+});
 
 return Geo;
 

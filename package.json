@@ -1,6 +1,6 @@
 {
   "name": "@zenlocator/geo",
-  "description": "Awesome library with common geospatial functions.",
+  "description": "Awesome library with common geo functions.",
   "version": "0.1.0",
   "homepage": "https://github.com/zenlocator/geo",
   "author": {
@@ -20,7 +20,7 @@
     "geo": "cli.js"
   },
   "scripts": {
-    "lint": "eslint lib tests",
+    "lint": "eslint lib tests cli.js",
     "test": "ava tests --color --verbose",
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "rollup": "rollup lib/index.js -c rollup.config.js -o dist/geo.js",

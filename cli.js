@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint no-var: "off", no-console: "off" */
 
 var program = require('commander');
 var chalk = require('chalk');
@@ -10,7 +11,7 @@ var Geo = require('./dist/geo'),
 function distanceUnitsRegex() {
 
 	var distanceUnits = Object.keys(defaultGeo.distanceUnits).map(function(v) {
-		return v.toLowerCase()
+		return v.toLowerCase();
 	}).join('|');
 
 	return new RegExp('^('+distanceUnits+')$', 'i');
@@ -76,9 +77,9 @@ program
 		var format = options.format || 'json';
 		if (format === 'list') {
 
-			bounds = bounds.sw.lat+','+bounds.sw.lng+' '+
-				bounds.nw.lat+','+bounds.nw.lng+' '+
-				bounds.ne.lat+','+bounds.ne.lng+' '+
+			bounds = bounds.sw.lat+','+bounds.sw.lng+'|'+
+				bounds.nw.lat+','+bounds.nw.lng+'|'+
+				bounds.ne.lat+','+bounds.ne.lng+'|'+
 				bounds.se.lat+','+bounds.se.lng;
 
 		}
@@ -93,8 +94,6 @@ program
 	.command('format-coord <coord> [is-lat]')
 	.description(chalk.dim('formats coordinate according to ')+'--coords-format'+chalk.dim(' option'))
 	.action(function(coord, isLat, options) {
-
-		coords = coord.split(',');
 
 		if (isLat === 'false') {
 			isLat = false;
@@ -293,8 +292,8 @@ program
 		if (format === 'list') {
 
 			ordered = ordered.map(function(coord) {
-				return coord.lat+','+coord.lng
-			}).join(' ');
+				return coord.lat+','+coord.lng;
+			}).join('|');
 
 		}
 

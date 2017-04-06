@@ -1,6 +1,6 @@
 {
   "name": "@zenlocator/geo",
-  "description": "Awesome library with common geospatial functions.",
+  "description": "Awesome library with common geo functions.",
   "main": "dist/geo.js",
   "homepage": "https://github.com/zenlocator/geo",
   "license": "MIT",
