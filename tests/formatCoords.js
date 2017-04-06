@@ -3,8 +3,8 @@ import test from 'ava';
 import Geo from '../dist/geo';
 
 const geo = new Geo({
-	outputCoordsFormat: 'd',
-	outputCoordsPrecision: 6
+	coordsFormat: 'D',
+	coordsPrecision: 6
 });
 
 test('format coords', t => {

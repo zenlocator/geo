@@ -3,8 +3,8 @@ import test from 'ava';
 import Geo from '../dist/geo';
 
 const geo = new Geo({
-	outputCoordsFormat: 'd',
-	outputCoordsPrecision: 6
+	coordsFormat: 'D',
+	coordsPrecision: 6
 });
 
 test('(number) -123.456789', t => t.is(geo.parseCoord(-123.456789), -123.456789));

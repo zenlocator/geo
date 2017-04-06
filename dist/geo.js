@@ -8,6 +8,13 @@ var convertDistance = function (distance, fromUnits, toUnits) {
 
 	var meters = 0;
 
+	/* basic formatting & error checking */
+
+	distance = parseInt(distance, 10);
+
+	fromUnits = fromUnits.toUpperCase();
+	toUnits = toUnits.toUpperCase();
+
 	/* convert distance to meters first */
 
 	switch (fromUnits) {
@@ -67,50 +74,6 @@ var detectCoordFormat = function (coord) {
 	}
 };
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
-
-
-
-
-
-
-
-
-
-
-
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-
-
-
-
-
-
-
-
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
-
 var formatBounds = function (bounds) {
 
 	var ret = {
@@ -122,30 +85,30 @@ var formatBounds = function (bounds) {
 
 	/* `bounds` has to be either an array, or an object, with exactly 2 coords */
 
-	if (Array.isArray(bounds) && bounds.length === 2) {
+	if (this.isArray(bounds) && bounds.length === 2) {
 
-		ret.sw = {
-			lat: this.formatCoord(bounds[0].lat, true),
-			lng: this.formatCoord(bounds[0].lng, false)
-		};
+		ret.sw = this.formatCoords({
+			lat: bounds[0].lat,
+			lng: bounds[0].lng
+		});
 
-		ret.ne = {
-			lat: this.formatCoord(bounds[1].lat, true),
-			lng: this.formatCoord(bounds[1].lng, false)
-		};
-	} else if ((typeof bounds === 'undefined' ? 'undefined' : _typeof(bounds)) === 'object' && Object.keys(bounds).length === 2) {
+		ret.ne = this.formatCoords({
+			lat: bounds[1].lat,
+			lng: bounds[1].lng
+		});
+	} else if (this.isPlainObject(bounds) && Object.keys(bounds).length === 2) {
 
 		var keys = Object.keys(bounds);
 
-		ret.sw = {
-			lat: this.formatCoord(bounds[keys[0]].lat, true),
-			lng: this.formatCoord(bounds[keys[0]].lng, false)
-		};
+		ret.sw = this.formatCoords({
+			lat: bounds[keys[0]].lat,
+			lng: bounds[keys[0]].lng
+		});
 
-		ret.ne = {
-			lat: this.formatCoord(bounds[keys[1]].lat, true),
-			lng: this.formatCoord(bounds[keys[1]].lng, false)
-		};
+		ret.ne = this.formatCoords({
+			lat: bounds[keys[1]].lat,
+			lng: bounds[keys[1]].lng
+		});
 	} else {
 		return;
 	}
@@ -160,15 +123,15 @@ var formatBounds = function (bounds) {
 
 	/* generate other missing coords */
 
-	ret.nw = {
-		lat: this.formatCoord(ret.sw.lat),
-		lng: this.formatCoord(ret.ne.lng)
-	};
+	ret.nw = this.formatCoords({
+		lat: ret.sw.lat,
+		lng: ret.ne.lng
+	});
 
-	ret.se = {
-		lat: this.formatCoord(ret.ne.lat),
-		lng: this.formatCoord(ret.sw.lng)
-	};
+	ret.se = this.formatCoords({
+		lat: ret.ne.lat,
+		lng: ret.sw.lng
+	});
 
 	return ret;
 };
@@ -189,15 +152,15 @@ var formatCoord = function (coord) {
 
 	coord = this.parseCoord(coord, false);
 
-	if (this.settings.outputCoordsFormat === this.coordFormats.D) {
-		return parseFloat(coord.toFixed(this.settings.outputCoordsPrecision));
+	if (this.settings.coordsFormat === this.coordFormats.D) {
+		return parseFloat(coord.toFixed(this.settings.coordsPrecision));
 	}
 
 	/* split coord into digits (degrees, mins, secs) */
 
-	if (this.settings.outputCoordsFormat === this.coordFormats.DM) {
+	if (this.settings.coordsFormat === this.coordFormats.DM) {
 		iterations = 1;
-	} else if (this.settings.outputCoordsFormat === this.coordFormats.DMS) {
+	} else if (this.settings.coordsFormat === this.coordFormats.DMS) {
 		iterations = 2;
 	}
 
@@ -212,7 +175,7 @@ var formatCoord = function (coord) {
 		}
 	}
 
-	ret.push(parseFloat(coord.toFixed(this.settings.outputCoordsPrecision)));
+	ret.push(parseFloat(coord.toFixed(this.settings.coordsPrecision)));
 
 	/* adjust direction */
 
@@ -261,15 +224,15 @@ var formatCoords = function (coords) {
 };
 
 var formatDistance = function (meters) {
-	var outputDistanceUnits = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.settings.outputDistanceUnits;
+	var distanceUnits = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.settings.distanceUnits;
 
 
-	var ret = meters;
+	var ret = parseFloat(meters);
 	var distancePrecision = void 0;
 
 	/* convert to proper units first */
 
-	switch (outputDistanceUnits) {
+	switch (distanceUnits) {
 		case this.distanceUnits.KILOMETERS:
 			ret *= 0.001;
 			distancePrecision = ret < 1 ? 2 : 1;
@@ -310,8 +273,8 @@ var formatDistance = function (meters) {
 
 	/* set the right precision */
 
-	if (this.settings.outputDistancePrecision !== this.FLEXIBLE_DISTANCE_PRECISION) {
-		distancePrecision = this.settings.outputDistancePrecision;
+	if (this.settings.distancePrecision !== this.FLEXIBLE_DISTANCE_PRECISION) {
+		distancePrecision = this.settings.distancePrecision;
 	}
 
 	return parseFloat(ret.toFixed(distancePrecision));
@@ -328,10 +291,10 @@ var getCenter = function () {
 	}
 
 	if (coordsArray.length === 1) {
-		return {
-			lat: this.formatCoord(coordsArray[0].lat),
-			lng: this.formatCoord(coordsArray[0].lng)
-		};
+		return this.formatCoords({
+			lat: coordsArray[0].lat,
+			lng: coordsArray[0].lng
+		});
 	}
 
 	/* otherwise, find a centroid */
@@ -421,9 +384,9 @@ var getDistance = function (coords1, coords2) {
 		return deg * (Math.PI / 180);
 	};
 
-	var lat1 = this.parseCoord(coords1.lat, false);
+	var lat1 = this.parseCoord(coords1.lat, true);
 	var lng1 = this.parseCoord(coords1.lng, false);
-	var lat2 = this.parseCoord(coords2.lat, false);
+	var lat2 = this.parseCoord(coords2.lat, true);
 	var lng2 = this.parseCoord(coords2.lng, false);
 
 	var earthRadiusMeters = 6371000;
@@ -450,12 +413,12 @@ var isPointInBounds = function (coords, bounds) {
 
 var isPointInCircle = function (coords, center, meters) {
 
-	var originalOutputDistanceUnits = this.settings.outputDistanceUnits;
+	var originaldistanceUnits = this.settings.distanceUnits;
 
-	this.settings.outputDistanceUnits = this.distanceUnits.METER;
+	this.settings.distanceUnits = this.distanceUnits.METER;
 	var ret = this.getDistance(coords, center) <= meters;
 
-	this.settings.outputDistanceUnits = originalOutputDistanceUnits;
+	this.settings.distanceUnits = originaldistanceUnits;
 	return ret;
 };
 
@@ -472,18 +435,11 @@ var isValidLng = function (lng) {
 var orderByDistance = function (center, coords) {
 	var _this = this;
 
-	var isPlainObject = function isPlainObject(o) {
-		return (typeof o === 'undefined' ? 'undefined' : _typeof(o)) === 'object' && o.constructor === Object;
-	};
-	var isArray = function isArray(a) {
-		return Object.prototype.toString.call(a) === '[object Array]';
-	};
-
-	if (!isPlainObject(coords) && !isArray(coords)) {
+	if (!this.isPlainObject(coords) && !this.isArray(coords)) {
 		return;
 	}
 
-	var ret = isArray(coords) ? [] : {};
+	var ret = this.isArray(coords) ? [] : {};
 	var distances = [];
 	var orderedDistances = [];
 	var getDistance = function getDistance(c, k) {
@@ -503,7 +459,7 @@ var orderByDistance = function (center, coords) {
 
 	/* build `distances` */
 
-	if (isArray(coords)) {
+	if (this.isArray(coords)) {
 		var _iteratorNormalCompletion = true;
 		var _didIteratorError = false;
 		var _iteratorError = undefined;
@@ -566,6 +522,50 @@ var orderByDistance = function (center, coords) {
 	}
 
 	return ret;
+};
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+
+
+
+
+
+
+
+
+
+
+
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+
+
+
+
+
+
+
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
 };
 
 var parseBounds = function (bounds) {
@@ -669,7 +669,7 @@ var parseCoord = function (coord) {
 	}
 
 	if (ret && usePrecision) {
-		ret = parseFloat(ret.toFixed(this.settings.outputCoordsPrecision));
+		ret = parseFloat(ret.toFixed(this.settings.coordsPrecision));
 	}
 
 	return ret;
@@ -697,9 +697,27 @@ var functions = Object.freeze({
 	parseCoord: parseCoord
 });
 
-var Geo = function Geo(settings) {
+var Geo = function Geo() {
+	var settings = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	classCallCheck(this, Geo);
 
+
+	/* cleanup settings */
+
+	for (var k in settings) {
+		if (settings.hasOwnProperty(k)) {
+
+			if (typeof settings[k] === 'string') {
+				settings[k] = settings[k].toUpperCase();
+			}
+
+			if (['distancePrecision', 'coordsPrecision'].indexOf(k) !== -1) {
+				settings[k] = parseInt(settings[k], 10);
+			}
+		}
+	}
+
+	/* internal */
 
 	this.distanceUnits = {
 		KILOMETERS: 'KILOMETERS',
@@ -716,17 +734,17 @@ var Geo = function Geo(settings) {
 	this.FLEXIBLE_DISTANCE_PRECISION = -1;
 
 	this.coordFormats = {
-		DMS: 'dms', /* degrees, minutes and seconds: (string)`DDD° MM' SS.S"` */
-		DM: 'dm', /* degrees and decimal minutes: (string)`DDD° MM.MMM'` */
-		DD: 'dd', /* decimal degrees: (string)`DDD.DDDDD°` */
-		D: 'd' /* decimal: (float)`DDD.DDDDD` */
+		DMS: 'DMS', /* degrees, minutes and seconds: (string)`DDD° MM' SS.S"` */
+		DM: 'DM', /* degrees and decimal minutes: (string)`DDD° MM.MMM'` */
+		DD: 'DD', /* decimal degrees: (string)`DDD.DDDDD°` */
+		D: 'D' /* decimal: (float)`DDD.DDDDD` */
 	};
 
 	this.settings = _extends({
-		outputDistanceUnits: this.distanceUnits.METER,
-		outputDistancePrecision: this.FLEXIBLE_DISTANCE_PRECISION,
-		outputCoordsFormat: this.coordFormats.DD,
-		outputCoordsPrecision: 6
+		distanceUnits: this.distanceUnits.METER,
+		distancePrecision: this.FLEXIBLE_DISTANCE_PRECISION,
+		coordsFormat: this.coordFormats.D,
+		coordsPrecision: 6
 	}, settings);
 
 	/* functions */
@@ -736,6 +754,12 @@ var Geo = function Geo(settings) {
 	};
 	this.toDeg = function (radians) {
 		return radians * 180 / Math.PI;
+	};
+	this.isPlainObject = function (o) {
+		return (typeof o === 'undefined' ? 'undefined' : _typeof(o)) === 'object' && o.constructor === Object;
+	};
+	this.isArray = function (a) {
+		return Object.prototype.toString.call(a) === '[object Array]';
 	};
 
 	/* radii */

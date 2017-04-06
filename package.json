@@ -1,6 +1,6 @@
 {
   "name": "@zenlocator/geo",
-  "description": "Geo library with a bunch of common functions.",
+  "description": "Awesome library with common geospatial functions.",
   "version": "0.1.0",
   "homepage": "https://github.com/zenlocator/geo",
   "author": {
@@ -16,14 +16,16 @@
     "url": "https://github.com/zenlocator/geo/issues"
   },
   "main": "dist/geo.js",
-  "bin": "cli.js",
+  "bin": {
+    "geo": "cli.js"
+  },
   "scripts": {
     "lint": "eslint lib tests",
     "test": "ava tests --color --verbose",
     "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "rollup": "rollup lib/index.js -c rollup.config.js -o dist/geo.js",
     "minify": "uglifyjs dist/geo.js -o dist/geo.min.js --source-map dist/geo.min.map --compress --mangle",
-    "build": "npm test && npm run rollup && npm run minify",
+    "build": "npm run rollup && npm run minify && npm test",
     "clean": "rm -rf coverage .nyc_output npm-debug.log",
     "all": "npm run lint && npm run coverage && npm run build && npm run clean"
   },
