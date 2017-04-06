@@ -24,9 +24,9 @@ Use in the browser (wherever ES5 is supported):
 <script type="text/javascript" src="geo.min.js"></script>
 <script type="text/javascript">
 
-	var geo = new Geo();
-	var point = geo.getDestinationPoint({ lat: 37.787, lng: -122.407 }, 1000, 45);
-	console.log(point); // { lat: '38° N', lng: '122° W' }
+  var geo = new Geo();
+  var point = geo.getDestinationPoint({ lat: 37.787, lng: -122.407 }, 1000, 45);
+  console.log(point); // { lat: '38° N', lng: '122° W' }
 
 </script>
 ```
