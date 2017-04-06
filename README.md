@@ -44,7 +44,7 @@ Or via CLI:
 
 ```shell
 $ geo get-destination-point --format list 37.787,-122.407 1000 45
-$ 38° N,122° W
+38° N,122° W
 ```
 
 API
