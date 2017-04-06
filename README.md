@@ -24,7 +24,8 @@ Use in the browser (wherever ES5 is supported; 5KB):
 <script type="text/javascript" src="geo.min.js"></script>
 <script type="text/javascript">
     var geo = new Geo();
-    console.log(geo.getDestinationPoint({ lat: 37.787, lng: -122.407 }, 1000, 45));
+	var point = geo.getDestinationPoint({ lat: 37.787, lng: -122.407 }, 1000, 45);
+	console.log(point); // { lat: '38° N', lng: '122° W' }
 </script>
 ```
 
@@ -32,15 +33,18 @@ Use in Node.js:
 
 ```javascript
 var Geo = require('@zenlocator/geo');
-var geo = new Geo();
 
-console.log(geo.getDestinationPoint({ lat: 37.787, lng: -122.407 }, 1000, 45));
+var geo = new Geo();
+var point = geo.getDestinationPoint({ lat: 37.787, lng: -122.407 }, 1000, 45);
+
+console.log(point);  // { lat: '38° N', lng: '122° W' }
 ```
 
 Or via CLI:
 
 ```shell
-geo --coords-format d --coords-precision 3 get-destination-point 37.787,-122.407 1000 45
+$ geo get-destination-point --format list 37.787,-122.407 1000 45
+$ 38° N,122° W
 ```
 
 API

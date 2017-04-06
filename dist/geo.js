@@ -208,8 +208,8 @@ var formatCoord = function (coord) {
 var formatCoords = function (coords) {
 
 	coords = {
-		lat: this.parseCoord(coords.lat, true),
-		lng: this.parseCoord(coords.lng, false)
+		lat: this.parseCoord(coords.lat),
+		lng: this.parseCoord(coords.lng)
 	};
 
 	/* treat [0,-180] and [0,180] as [0,0] */
@@ -219,8 +219,8 @@ var formatCoords = function (coords) {
 	}
 
 	return {
-		lat: this.formatCoord(coords.lat),
-		lng: this.formatCoord(coords.lng)
+		lat: this.formatCoord(coords.lat, true),
+		lng: this.formatCoord(coords.lng, false)
 	};
 };
 
