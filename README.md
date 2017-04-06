@@ -18,14 +18,16 @@ Install geo via:
 
 (or just use the code at `dist/geo.min.js`)
 
-Use in the browser (wherever ES5 is supported; 5KB):
+Use in the browser (wherever ES5 is supported):
 
 ```javascript
 <script type="text/javascript" src="geo.min.js"></script>
 <script type="text/javascript">
-    var geo = new Geo();
+
+	var geo = new Geo();
 	var point = geo.getDestinationPoint({ lat: 37.787, lng: -122.407 }, 1000, 45);
 	console.log(point); // { lat: '38° N', lng: '122° W' }
+
 </script>
 ```
 
