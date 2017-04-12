@@ -47,10 +47,10 @@ function geo(options) {
 
 program
 	.version(pkg.version)
-	.option('-du, --distance-units <units>', chalk.dim('output distance units: "meters", "feet", etc (eg: '+chalk.bold('-du miles')+')'), distanceUnitsRegex())
-	.option('-dp, --distance-precision <format>', chalk.dim('round distance to these digits (eg: '+chalk.bold('-dp 3')+')'), /\d+/)
-	.option('-cf, --coords-format <digits>', chalk.dim('output format of coordinates (eg: '+chalk.bold('-cf dms')+')'), /^(dms|dm|dd|d)$/i)
-	.option('-cp, --coords-precision <digits>', chalk.dim('round coordinates to these digits (eg: '+chalk.bold('-cp 6')+')'), /\d+/);
+	.option('-u, --distance-units <units>', chalk.dim('output distance units: "meters", "feet", etc (eg: '+chalk.bold('-u miles')+')'), distanceUnitsRegex())
+	.option('-p, --distance-precision <format>', chalk.dim('round distance to these digits (eg: '+chalk.bold('-p 3')+')'), /\d+/)
+	.option('-c, --coords-format <digits>', chalk.dim('output format of coordinates (eg: '+chalk.bold('-c dms')+')'), /^(dms|dm|dd|d)$/i)
+	.option('-d, --coords-precision <digits>', chalk.dim('round coordinates to these digits (eg: '+chalk.bold('-d 6')+')'), /\d+/);
 
 /* convertDistance */
 
@@ -128,10 +128,10 @@ program
 /* formatDistance */
 
 program
-	.command('format-distance <meters> [distance-units]')
+	.command('format-distance <meters>')
 	.description(chalk.dim('formats distance according to ')+'--distance-units'+chalk.dim(' option'))
-	.action(function(meters, distanceUnits, options) {
-		console.log(geo(options).formatDistance(meters, distanceUnits));
+	.action(function(meters, options) {
+		console.log(geo(options).formatDistance(meters));
 	});
 
 /* getCenter */

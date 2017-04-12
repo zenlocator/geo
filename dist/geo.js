@@ -282,6 +282,25 @@ var formatDistance = function (meters) {
 	return parseFloat(ret.toFixed(distancePrecision));
 };
 
+var getBounds = function (center, meters) {
+
+	var lat = this.parseCoord(center.lat, true);
+	var lng = this.parseCoord(center.lng, false);
+
+	center = {
+		lat: lat,
+		lng: lng
+	};
+
+	var sw = this.getDestinationPoint(center, meters, 225);
+	var ne = this.getDestinationPoint(center, meters, 45);
+
+	return this.formatBounds({
+		sw: sw,
+		ne: ne
+	});
+};
+
 var getCenter = function () {
 	var coordsArray = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
@@ -761,6 +780,7 @@ Geo.prototype = _extends({}, Geo.prototype, {
 	formatCoord: formatCoord,
 	formatCoords: formatCoords,
 	formatDistance: formatDistance,
+	getBounds: getBounds,
 	getCenter: getCenter,
 	getClosest: getClosest,
 	getDestinationPoint: getDestinationPoint,
