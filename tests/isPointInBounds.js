@@ -25,8 +25,6 @@ test('is [0, 0] in bounds', t => {
 		}
 	};
 
-	const b = geo.formatBounds(bounds);
-
 	t.true(geo.isPointInBounds(point, bounds));
 
 });
