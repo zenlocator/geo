@@ -19,19 +19,19 @@ test('get bounds', t => {
 	t.deepEqual(geo.getBounds(center, meters), {
 		ne: {
 			lat: 36.831678,
-			lng: 121.737193,
+			lng: 121.737193
 		},
 		nw: {
-			lat: 36.816001,
-			lng: 121.737193,
+			lat: 36.831678,
+			lng: 121.717609
 		},
 		se: {
-			lat: 36.831678,
-			lng: 121.717609,
+			lat: 36.816001,
+			lng: 121.737193
 		},
 		sw: {
 			lat: 36.816001,
-			lng: 121.717609,
+			lng: 121.717609
 		}
 	});
 

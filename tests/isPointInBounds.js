@@ -17,13 +17,15 @@ test('is [0, 0] in bounds', t => {
 	const bounds = {
 		ne: {
 			lat: 45.456,
-			lng: -78.901
+			lng: 78.901
 		},
 		sw: {
 			lat: -45.456,
-			lng: 67.890
+			lng: -67.890
 		}
 	};
+
+	const b = geo.formatBounds(bounds);
 
 	t.true(geo.isPointInBounds(point, bounds));
 

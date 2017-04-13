@@ -84,31 +84,37 @@ var formatBounds = function (bounds) {
 		se: 0
 	};
 
-	/* `bounds` has to be either an array, or an object, with exactly 2 coords */
+	var offsetCenter = {
+		lat: -90,
+		lng: 1
+	};
 
-	if (this.isArray(bounds) && bounds.length === 2) {
+	var sorted = [];
+
+	/* `bounds` has to be either an array, or an object */
+
+	if (this.isArray(bounds) && bounds.length >= 2) {
+		sorted = this.orderByDistance(offsetCenter, bounds);
+	} else if (this.isPlainObject(bounds) && Object.keys(bounds).length >= 2) {
+		sorted = this.orderByDistance(offsetCenter, this.values(bounds));
+	} else {
+		return;
+	}
+
+	/* assign two coordinates for bounds (first and last) */
+
+	if (sorted.length) {
 
 		ret.sw = this.formatCoords({
-			lat: bounds[0].lat,
-			lng: bounds[0].lng
+			lat: sorted[0].lat,
+			lng: sorted[0].lng
 		});
+
+		var lastIndex = sorted.length - 1;
 
 		ret.ne = this.formatCoords({
-			lat: bounds[1].lat,
-			lng: bounds[1].lng
-		});
-	} else if (this.isPlainObject(bounds) && Object.keys(bounds).length === 2) {
-
-		var keys = Object.keys(bounds);
-
-		ret.sw = this.formatCoords({
-			lat: bounds[keys[0]].lat,
-			lng: bounds[keys[0]].lng
-		});
-
-		ret.ne = this.formatCoords({
-			lat: bounds[keys[1]].lat,
-			lng: bounds[keys[1]].lng
+			lat: sorted[lastIndex].lat,
+			lng: sorted[lastIndex].lng
 		});
 	} else {
 		return;
@@ -125,13 +131,13 @@ var formatBounds = function (bounds) {
 	/* generate other missing coords */
 
 	ret.nw = this.formatCoords({
-		lat: ret.sw.lat,
-		lng: ret.ne.lng
+		lat: ret.ne.lat,
+		lng: ret.sw.lng
 	});
 
 	ret.se = this.formatCoords({
-		lat: ret.ne.lat,
-		lng: ret.sw.lng
+		lat: ret.sw.lat,
+		lng: ret.ne.lng
 	});
 
 	return ret;
@@ -429,7 +435,7 @@ var isPointInBounds = function (coords, bounds) {
 
 	bounds = this.parseBounds(bounds);
 
-	return coords.lat >= bounds.sw.lat && coords.lat <= bounds.ne.lat && coords.lng >= bounds.ne.lng && coords.lng <= bounds.sw.lng;
+	return coords.lat >= bounds.sw.lat && coords.lat <= bounds.ne.lat && coords.lng >= bounds.nw.lng && coords.lng <= bounds.se.lng;
 };
 
 var isPointInCircle = function (coords, center, meters) {
@@ -602,16 +608,16 @@ var parseBounds = function (bounds) {
 				lng: this.parseCoord(bounds.sw.lng)
 			},
 			nw: {
-				lat: this.parseCoord(bounds.se.lat),
-				lng: this.parseCoord(bounds.se.lng)
+				lat: this.parseCoord(bounds.nw.lat),
+				lng: this.parseCoord(bounds.nw.lng)
 			},
 			ne: {
 				lat: this.parseCoord(bounds.ne.lat),
 				lng: this.parseCoord(bounds.ne.lng)
 			},
 			se: {
-				lat: this.parseCoord(bounds.nw.lat),
-				lng: this.parseCoord(bounds.nw.lng)
+				lat: this.parseCoord(bounds.se.lat),
+				lng: this.parseCoord(bounds.se.lng)
 			}
 		};
 	}
@@ -755,6 +761,11 @@ var Geo = function Geo() {
 	};
 	this.isArray = function (a) {
 		return Object.prototype.toString.call(a) === '[object Array]';
+	};
+	this.values = function (o) {
+		return Object.keys(o).map(function (k) {
+			return o[k];
+		});
 	};
 
 	/* radius(es?) :P */
