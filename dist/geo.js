@@ -429,7 +429,7 @@ var isPointInBounds = function (coords, bounds) {
 
 	bounds = this.parseBounds(bounds);
 
-	return coords.lat >= bounds.nw.lat && coords.lat <= bounds.ne.lat && coords.lng >= bounds.sw.lng && coords.lng <= bounds.nw.lng;
+	return coords.lat >= bounds.sw.lat && coords.lat <= bounds.ne.lat && coords.lng >= bounds.ne.lng && coords.lng <= bounds.sw.lng;
 };
 
 var isPointInCircle = function (coords, center, meters) {
@@ -602,16 +602,16 @@ var parseBounds = function (bounds) {
 				lng: this.parseCoord(bounds.sw.lng)
 			},
 			nw: {
-				lat: this.parseCoord(bounds.nw.lat),
-				lng: this.parseCoord(bounds.nw.lng)
+				lat: this.parseCoord(bounds.se.lat),
+				lng: this.parseCoord(bounds.se.lng)
 			},
 			ne: {
 				lat: this.parseCoord(bounds.ne.lat),
 				lng: this.parseCoord(bounds.ne.lng)
 			},
 			se: {
-				lat: this.parseCoord(bounds.se.lat),
-				lng: this.parseCoord(bounds.se.lng)
+				lat: this.parseCoord(bounds.nw.lat),
+				lng: this.parseCoord(bounds.nw.lng)
 			}
 		};
 	}
